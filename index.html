@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<style>
+.topnav {
+  overflow: hidden;
+  background-color: #808080;
+}
+</style>
+<!--
+<div class="topnav" id="myTopnav">
+  <a href=""><img width="5%" src="static/images/fudan_logo.png"></a>
+  <a href=""><img width="10%" src="static/images/shail_logo.png"></a>
+  <a href=""><img width="7%" src="static/images/scanline_logo.png"></a>
+  <a href=""><img width="6%" src="static/images/sjtu_logo.png"></a>
+</div>
+-->
+  <head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="Boosting 3D Object Generation through PBR Materials">
+    <meta name="keywords" content="material generation, 3D asset creation, generative modeling">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Boosting 3D Object Generation through PBR Materials</title>
+  
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+  
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+  
+      gtag('js', new Date());
+  
+      gtag('config', 'G-PYVRSFMDRL');
+    </script>
+  
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+          rel="stylesheet">
+  
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js"></script>
+  </head>
+<body>
+
+<!--
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+        </div> 
+      </div> 
+    </div>
+
+  </div>
+</nav>
+-->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Boosting 3D Object Generation through PBR Materials</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=qnOwZmkAAAAJ">Yitong Wang</a><sup>1,2</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://sheldontsui.github.io/">Xudong Xu</a><sup>2</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://limacv.github.io/homepage/">Li Ma</a><sup>3</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="">Haoran Wang</a><sup>4</sup>,</span>
+            <span class="author-block">
+             <a href="https://daibo.info/">Bo Dai</a><sup>2&dagger;</sup></span>
+            </span>
+          </div>
+          <sup>&dagger;</sup>Corresponding author. &nbsp;&nbsp;
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <sup>1</sup><a href="https://www.fudan.edu.cn/en/">Fudan University</a>,</span>
+            </span>
+            <span class="author-block">
+              <sup>2</sup><a href="https://www.shlab.org.cn/">Shanghai Artificial Intelligence Laboratory</a>,</span>
+            </span>
+            <span class="author-block">
+              <sup>3</sup><a href="https://www.eyelinestudios.com/">Netflix Eyeline Studios</a>,</span>
+            </span>
+            <span class="author-block">
+              <sup>4</sup><a href="https://en.sjtu.edu.cn/">Shanghai Jiao Tong University</a>,</span>
+            </span>
+            
+          </div>
+          <br>
+
+          <div class="is-size-5 publication-authors">
+              <span class="title is-4">SIGGRAPH Asia 2024 (Conference Track)</span>
+          </div>
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>arxiv</span>
+                </a>
+              </span> -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Coming Soon)</span>
+                  </a>
+              </span>
+              <!--
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fa fa-desktop"></i>
+                  </span>
+                  <span>Demo</span>
+                  </a>
+              </span>
+              -->
+              <!-- Dataset Link. -->
+              <!--
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Model</span>
+                  </a>
+              -->
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Teaser video. -->
+    <div class="columns is-centered has-text-centered">
+      <!--
+      <div class="column is-full-width">
+        <div class="column">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/teaser.mp4" type="video/mp4">
+            </video>
+        </div>
+        -->
+      <div class="column is-full-width">
+        <div class="column">
+          <img src="static/images/teaser2.png" alt="teaser" style="width:100%">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 180px;">
+            <!--
+            <p>Input</p>
+            <p>Generated multiview image and normal maps</p>
+            <p>Mesh</p>
+            -->
+            <p>Given a single image, the existing image-to-3D generative models always synthesize 3D meshes with flawed geometry and RGB textures only.
+              Our method not only boosts existing approaches with PBR materials, empowering relighting under various lighting conditions, 
+              but also boosts the object's normal maps, capturing more intricate details and better aligning with the given image.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Automatic 3D content creation has gained increasing attention recently, due to its potential in various applications such as video games, film industry, and AR/VR. 
+            Recent advancements in diffusion models and multimodal models have notably improved the quality and efficiency of 3D object generation given a single RGB image. 
+            However, 3D objects generated even by state-of-the-art methods are still unsatisfactory compared to human-created assets. 
+            Considering only textures instead of materials makes these methods encounter challenges in photo-realistic rendering, relighting, and flexible appearance editing.
+            And they also suffer from severe misalignment between geometry and high-frequency texture details. 
+            In this work, we propose a novel approach to boost the quality of generated 3D objects from the perspective of Physics-Based Rendering (PBR) materials. 
+            By analyzing the components of PBR materials, 
+            we choose to consider albedo, roughness, metalness, and bump. %in a single image for 3D object generation.
+            For albedo and bump,
+            we leverage Stable Diffusion fine-tuned on synthetic data to extract these values,
+            with novel usages of these fine-tuned models to obtain 3D consistent albedo UV and bump UV for generated objects.
+            In terms of roughness and metalness,
+            we adopt a semi-automatic process to provide room for interactive adjustment, which we believe is more practical.
+            Extensive experiments demonstrate that our model is generally beneficial for various state-of-the-art generation methods, significantly boosting the quality and realism of their generated 3D objects, with natural relighting effects and substantially improved geometry.
+          </p><br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Abstract. -->
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <div class="column">
+          <img src="static/images/framework.png" alt="pipeline" style="width:100%">
+        </div>
+      </div>
+    </div>
+    <p><b>Method Overview.</b> Given a single image, we first convert it to an albedo image using our fine-tuned diffusion model. 
+      Conditioned on this derived albedo, the base method to be boosted will generate multi-view albedo images and then fuse them into a 3D mesh and an albedo UV map. 
+      Afterwards, we leverage a 3D semantic mask to obtain complete metalness and roughness UV maps by acquiring the VLMs or 3D artists' manual adjustment. 
+      Moreover, an iterative normal refinement is employed to boost the original flawed normals, empowering realistic relighting results.</p>
+  </div>
+
+  <!--
+  <div class="container is-max-desktop" style="margin-top: 2rem; margin-bottom: 2rem;">
+  <div class="columns is-centered has-text-centered">
+    <div class="columns is-1 is-multiline is-mobile">
+      <div class="column pt-0 mt-0 pb-0 mb-0 is-vcentered is-full">
+        <figure>
+          <img src="static/images/camera_setting.jpg" alt="Custom setup" style="width:75%">
+          <figcaption>(a) General camera setting&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(b) Canonical camera setting  </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+  <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <figure>
+          <img src="static/images/attention_comp.jpg" alt="Custom setup" style="width:75%">
+          <figcaption>&nbsp;&nbsp;&nbsp;&nbsp;
+                      (c) Dense MV attention&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      (d) Epipolar MV attention&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      (e) Row-wise MV attention
+          </figcaption>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>4</sup></i>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>2</sup>K</i>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>3</sup></i>)
+         </p>
+        </figure>
+      </div>
+  </div>
+  <p> <b> Motivation.</b> 
+    We analyze different types of multiview attention layers. In a dense multiview attention layer <b>(c)</b>, all
+    feature vectors of multiview images are fed into an attention block. For a general camera setting
+    <b>(a)</b> with arbitrary viewpoints and intrinsics, utilizing epipolar constraint to construct an epipolar
+    attention <b>(d)</b> needs to correlate the features on the epipolar line. This means that we need to sample
+    <i>K</i> points along each epipolar line to compute such an attention layer. In our canonical camera setting
+    <b>(b)</b> with orthogonal cameras and viewpoints on an elevation of 0<sup>°</sup>, epipolar lines align with the
+    row of the images across different views <b>(e)</b>, which eliminates the need to resample epipolar line
+    to compute epipolar attention. We assume the latent feature map has a resolution of <i>H &times; W</i> and
+    <i>H = W = S</i>. In such a <i>N</i>-view camera system, row-wise attention reduces the computational
+    complexity to O(<i>N<sup>2</sup>S<sup>3</sup></i>).
+    -->
+  </section>
+
+  <section class="section">
+    <!-- results -->
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <div class="column">
+            <h2 class="title is-5">Normal Boosting on Image-to-3D
+            </h2>
+            <p class="caption has-text-centered mt-3 is-size-8">Image (Left 1), Albedo (Left 2), Original Normal (Left 3), Boosted Normal (Left 4)</p>
+          </div>
+          <div class="columns is-1 is-multiline is-mobile">
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/ironsuit4_al_crm_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">CRM-based</p>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/shield2_al_instantmesh_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">InstantMesh-based</p>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/shield2_al_wonder3d_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">Wonder3D-based</p>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/dragon6_al_crm_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">CRM-based</p>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/dragon7_al_triposr_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">TripoSR-based</p>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/fish1_al_instantmesh_reference.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">InstantMesh-based</p>
+            </div>
+
+          <!--
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/refine_backpack_color.mp4" type="video/mp4">
+            </video>
+          </div>
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_shoe1_color.mp4" type="video/mp4">
+              </video>
+            </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/refine_school_bus1_color.mp4" type="video/mp4">
+            </video>
+          </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_toaster_color.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_lunch_bag_color.mp4" type="video/mp4">
+              </video>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/refine_elephant_color.mp4" type="video/mp4">
+            </video>
+          </div>
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_train_color.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_school_bus2_color.mp4" type="video/mp4">
+              </video>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/refine_teapot_color.mp4" type="video/mp4">
+            </video>
+          </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_turtle_color.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_mario_color.mp4" type="video/mp4">
+              </video>
+          </div>
+
+          <div class="column pb-0 mb-0 is-half">
+            <video id="teaser" autoplay muted loop playsinline height="100%" >
+              <source src="static/videos/refine_lion_color.mp4" type="video/mp4">
+            </video>
+          </div>
+          -->
+        </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="section">
+      <!-- results -->
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <div class="column">
+              <h2 class="title is-5">Normal Boosting on Artist-crafted Objects
+              </h2>
+              <p class="caption has-text-centered mt-3 is-size-8">The artist-crafted objects presented below are sourced from the Objaverse-XL dataset, a freely accessible, open-source collection of 3D assets.</p>
+              <p class="caption has-text-centered mt-3 is-size-8">Albedo (Left 1), Original Normal (Left 2), Boosted Normal (Left 3)</p>
+            </div>
+            
+            <!--
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/chunkyknight_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+              </div>
+              <p class="caption has-text-centered is-size-8">Chunky Knight</p>
+            </div>
+       
+            <br>
+            -->
+            <div class="columns is-1 is-multiline is-mobile">
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/chunkyknight_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Chunky Knight</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/joker_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Joker</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/falloutcar_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Fallout Car</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/darius_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Darius</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/lumine_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Genshin Impact Lumine</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/batman_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Batman</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/monsterplant_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Carnivorous Plant</p>
+              </div>
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/videos/hiveknight_sketchfab_reference.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Hive</p>
+              </div>
+            </div>
+      
+              <!--
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_Ghost_eating_burger_no_bg.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Ghost eating burger.</p>
+
+              </div>
+  
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_lewd_statue_of_an_angel_texting_on_a_cell_phone_no_bg.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Lewd statue of an angel texting on a cell phone.</p>
+
+            </div>
+  
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_kind_cartoon_lion_in_costume_of_astronaut_no_bg.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">Kind cartoon lion in costume of astronaut.</p>
+            </div>
+   
+      
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_cute_demon_combination_angel_figure_no_bg.mp4" type="video/mp4">
+                </video>
+              <p class="caption has-text-centered mt-3 is-size-8">Cute demon combination angel figure.</p>
+              </div>
+  
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_dinosaur_playing_electric_guitar_no_bg.mp4" type="video/mp4">
+                </video>
+              <p class="caption has-text-centered mt-3 is-size-8">Dinosaur playing electric guitar.</p>
+            </div>
+  
+            <div class="column pb-0 mb-0 is-half">
+              <video id="teaser" autoplay muted loop playsinline height="100%" >
+                <source src="static/videos/refine_classic_musketeer_hat_no_bg.mp4" type="video/mp4">
+              </video>
+              <p class="caption has-text-centered mt-3 is-size-8">Classic musketeer hat.</p>
+            </div>
+            -->
+          </div>
+          
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <section class="section">
+        <!-- results -->
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-full-width">
+              <div class="column">
+                <h2 class="title is-5">PBR Material Generation & Relighting
+                </h2>
+                <p class="caption has-text-centered mt-3 is-size-8">Albedo (Left 1), PBR (Left 2), Relighting (Left 3)</p>
+              </div>
+              
+              <!--
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/chunkyknight_sketchfab_reference.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <p class="caption has-text-centered is-size-8">Chunky Knight</p>
+              </div>
+         
+              <br>
+              -->
+              <div class="columns is-1 is-multiline is-mobile">
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/ironsuit4_al_crm_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Iron Man</p>
+                </div>
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/shield2_al_crm_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Shield</p>
+                </div>
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/chest3_al_instantmesh_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Treasure Chest</p>
+                </div>
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/knightlp_sketchfab_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Knight</p>
+                </div>
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/pistol_sketchfab_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Pistol</p>
+                </div>
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/videos/darius_sketchfab_pbr.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Darius</p>
+                </div>
+              </div>
+        
+                <!--
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%" >
+                    <source src="static/videos/refine_Ghost_eating_burger_no_bg.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Ghost eating burger.</p>
+  
+                </div>
+    
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%" >
+                    <source src="static/videos/refine_lewd_statue_of_an_angel_texting_on_a_cell_phone_no_bg.mp4" type="video/mp4">
+                  </video>
+                  <p class="caption has-text-centered mt-3 is-size-8">Lewd statue of an angel texting on a cell phone.</p>
+  
+              </div>
+    
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_kind_cartoon_lion_in_costume_of_astronaut_no_bg.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Kind cartoon lion in costume of astronaut.</p>
+              </div>
+     
+        
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%" >
+                    <source src="static/videos/refine_cute_demon_combination_angel_figure_no_bg.mp4" type="video/mp4">
+                  </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Cute demon combination angel figure.</p>
+                </div>
+    
+                <div class="column pb-0 mb-0 is-half">
+                  <video id="teaser" autoplay muted loop playsinline height="100%" >
+                    <source src="static/videos/refine_dinosaur_playing_electric_guitar_no_bg.mp4" type="video/mp4">
+                  </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Dinosaur playing electric guitar.</p>
+              </div>
+    
+              <div class="column pb-0 mb-0 is-half">
+                <video id="teaser" autoplay muted loop playsinline height="100%" >
+                  <source src="static/videos/refine_classic_musketeer_hat_no_bg.mp4" type="video/mp4">
+                </video>
+                <p class="caption has-text-centered mt-3 is-size-8">Classic musketeer hat.</p>
+              </div>
+              -->
+            </div>
+            
+            </div>
+          </div>
+        </div>
+        </section>
+      
+      
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-full-width">
+              <div class="column">
+                <h2 class="title is-5">Demo Video
+                </h2>
+              </div>
+    
+              <div class="columns is-1 is-multiline is-mobile">
+                
+    
+                      
+          </div>
+          
+          <div class="column is-full-width">
+            <div class="column">
+                <video id="teaser" controls autoplay loop muted playsinline height="100%">
+                  <source src="static/videos/video_supp_new_institute.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          
+          
+        </div>
+        </section>
+        
+
+        <section class="section">
+          <div class="container is-max-desktop">
+            <!-- Concurrent Work. -->
+            <div class="columns is-centered">
+              <div class="column is-full-width">
+                <h2 class="title is-3">Acknowledgments</h2>
+        
+                <div class="content has-text-justified">
+                  <p>
+                    This work is mainly supported by <a href="https://www.shlab.org.cn/">Shanghai Artificial Intelligence Laboratory</a>.
+                  </p>
+                  <!--<img src="static/images/shail_logo.png" alt="teaser" style="width:100%">-->
+                </div>
+              </div>
+            </div>
+            <!--/ Concurrent Work. -->
+          </div>
+        </section>
+        
+<section class="section" id="BibTeX">
+          <div class="container is-max-desktop content">
+            <h2 class="title">BibTeX</h2>
+
+    <pre style="background-color:#e9eeef;padding: 1.25em 1.5em">
+<code>@proceedings{xxx,   
+  title={Boosting 3D Object Generation through PBR Materials},
+  author={Wang, Yitong and Xu, Xudong and Ma, Li and Wang, Haoran and Dai, Bo},
+  journal={ACM SIGGRAPH Asia 2024 Conference Proceedings},
+  year={2024}
+}</code></pre> 
+        </div>
+        </section>
+        
+        
+        <footer class="footer">
+          <div class="container">
+            <div class="columns is-centered">
+              <div class="column is-8">
+                <div class="content">
+                  <p>
+                    We thank the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> team for providing this
+                    amazing website template.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+
+</body>
+</html>
