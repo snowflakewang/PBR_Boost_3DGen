@@ -2,6 +2,6 @@ __pycache__/
 .ipynb_checkpoints/
 
 ckpts/
-data/
-input/
+#data/
+#input/
 out/

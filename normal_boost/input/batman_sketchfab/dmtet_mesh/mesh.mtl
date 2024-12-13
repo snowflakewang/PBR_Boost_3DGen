@@ -1,0 +1,4 @@
+newmtl defaultMat
+bsdf   pbr
+map_Kd texture_kd.png
+map_Ks texture_ks.png
