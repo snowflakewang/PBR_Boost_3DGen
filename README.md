@@ -2,7 +2,7 @@
 
 Official implementation for _Boosting 3D Object Generation through PBR Materials_.
 
-## [Project Page]() | [arXiv]() | [Weights]()
+## [Project Page](https://snowflakewang.github.io/PBR_Boost_3DGen/) | [arXiv](https://arxiv.org/abs/2411.16080) | [Paper](https://dl.acm.org/doi/10.1145/3680528.3687676) | [Weights](https://huggingface.co/SnowflakeWang/MonoIntrinsics)
 
 ## Install
 
