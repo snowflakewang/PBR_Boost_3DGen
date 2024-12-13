@@ -185,6 +185,13 @@ python relight.py --config configs/relight_cfg.json
 ## Citation
 
 ```
-@proceedings{
+@inproceedings{wang2024boosting3dobjectgeneration,
+  author = {Wang, Yitong and Xu, Xudong and Ma, Li and Wang, Haoran and Dai, Bo},
+  title = {Boosting 3D object generation through PBR materials},
+  year = {2024},
+  booktitle = {SIGGRAPH Asia 2024 Conference Papers},
+  articleno = {140},
+  numpages = {11},
+  series = {SA '24}
 }
 ```
